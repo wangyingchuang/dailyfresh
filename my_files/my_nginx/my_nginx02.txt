@@ -1,0 +1,21 @@
+
+
+如果 安装有其他fdfs包, 要先卸载完再安装py3Fdfs
+
+pip install py3Fdfs
+ 测试
+
+from fdfs_client.client import *
+client_conf_obj = get_tracker_conf('/etc/fdfs/client.conf')
+client = Fdfs_client(client_conf_obj)
+ret = client.upload_by_filename('test')
+ret
+
+{'Group name': b'group1', 'Remote file_id': b'group1/M00/00/00/wKjRgl09sfWALPKYAAAAAAAAAAA765.txt', 'Status': 'Upload successed.', 'Local file name': 'test.txt', 'Uploaded size': '0B', 'Storage IP': b'192.168.209.130'}
+
+
+关于storege.conf配置文件
+
+tracker_server = 填写所在服务器的外网ip
+
+安全组开放 配置文件里的23000端口

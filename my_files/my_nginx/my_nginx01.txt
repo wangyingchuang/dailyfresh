@@ -1,0 +1,51 @@
+https://blog.csdn.net/qq_31463999/article/details/82768466#commentBox
+
+
+启动Tracker
+
+可以用这种方式启动
+# /etc/init.d/fdfs_trackerd start
+ 
+也可以用这种方式启动，前提是上面创建了软链接，后面都用这种方式
+# service fdfs_trackerd start
+
+
+启动 Storage
+
+启动Storage前确保Tracker是启动的。初次启动成功，会在 /ljzsg/fastdfs/storage 目录下创建 data、 logs 两个目录。
+
+可以用这种方式启动
+# /etc/init.d/fdfs_storaged start
+ 
+也可以用这种方式，后面都用这种
+# service fdfs_storaged start
+
+上传文件
+在linux内部执行如下命令上传 namei.jpeg 图片
+
+# /usr/bin/fdfs_upload_file /etc/fdfs/client.conf namei.jpeg
+or
+fdfs_upload_file /etc/fdfs/client.conf ~/Desktop/nav.png 
+
+
+启动和停止nginx
+
+wang@ubuntu:/usr/local/nginx/sbin$ sudo ./nginx
+ngx_http_fastdfs_set pid=22396
+wang@ubuntu:/usr/local/nginx/sbin$ sudo ./nginx -s stop
+
+错误1：
+wang@ubuntu:~$ sudo /usr/local/nginx/sbin/nginx
+ngx_http_fastdfs_set pid=4472
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] still could not bind()
+wang@ubuntu:~$ lsof -i:80
+wang@ubuntu:~$ sudo fuser -k 80/tcp
+
+
+
+

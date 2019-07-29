@@ -1,0 +1,25 @@
+from redis import StrictRedis
+
+if __name__=="__main__":
+    try:
+        sr = StrictRedis()
+        res = sr.set('name', 'itheima')
+        print(res) # True
+
+        res = sr.get('name')
+        print(res) # b'itheima'
+
+        res = sr.set('name', 'itheima2')
+        print(res) # True
+
+        res = sr.delete('name')
+        print(res) # 1
+
+        res = sr.delete('a1', 'a2')
+        print(res) # 0
+        
+        res = sr.keys()
+        print(res)
+    except Exception as e:
+        print(e) 
+
