@@ -20,6 +20,6 @@ urlpatterns = [
 
     # 使用LoginRequiredMixin装饰器
     path('', UserInfoView.as_view(), name='user'),  # 用户信息
-    path('order/', UserOrderView.as_view(), name='order'),  # 订单
+    re_path('^order/(?P<page>\d+)$', UserOrderView.as_view(), name='order'),  # 订单
     path('address/', UserSiteView.as_view(), name='address'),  # 地址
 ]
