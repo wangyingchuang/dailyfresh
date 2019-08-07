@@ -1,4 +1,4 @@
-# dailyfresh1 
+# dailyfresh
 配置环境和项目思路请查看：https://www.cnblogs.com/xiaodaima/p/11245292.html
 需求分析
 1.1  用户模块
