@@ -15,19 +15,11 @@
 		<div class="header">
 			<div class="welcome fl">欢迎来到天天生鲜!</div>
 			<div class="fr">
-                {% if user.is_authenticated %}
-				<div class="login_btn fl">
-					欢迎您：<em>{{ user.username }}</em>
-                    <span>|</span>
-					<a href="{% url 'user:logout' %}">退出</a>
-				</div>
-                {% else %}
 				<div class="login_btn fl">
 					<a href="{% url 'user:login' %}">登录</a>
 					<span>|</span>
 					<a href="{% url 'user:register' %}">注册</a>
 				</div>
-                {% endif %}
 				<div class="user_link fl">
 					<span>|</span>
 					<a href="{% url 'user:user' %}">用户中心</a>
@@ -37,11 +29,11 @@
 					<a href="{% url 'user:order' 1 %}">我的订单</a>
 				</div>
 			</div>
-		</div>		
+		</div>
 	</div>
 
 	<div class="search_bar clearfix">
-		<a href="{% url 'goods:index' %}" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<a href="index.html" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
 		<div class="search_con fl">
 			<form action="/search"  method="get">
                 <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
@@ -50,7 +42,7 @@
 		</div>
 		<div class="guest_cart fr">
 			<a href="{% url 'cart:show' %}" class="cart_name fl">我的购物车</a>
-			<div class="goods_count fl" id="show_count">{{ cart_count }}</div>
+			<div class="goods_count fl" id="show_count">0</div>
 		</div>
 	</div>
 
@@ -58,7 +50,7 @@
 		<div class="navbar">
 			<h1 class="fl">全部商品分类</h1>
 			<ul class="navlist fl">
-				<li><a href="{% url 'goods:index' %}">首页</a></li>
+				<li><a href="">首页</a></li>
 				<li class="interval">|</li>
 				<li><a href="">手机生鲜</a></li>
 				<li class="interval">|</li>
@@ -76,7 +68,7 @@
 		<div class="slide fl">
 			<ul class="slide_pics">
                 {% for banner in goods_banners %}
-				    <li><a href="{% url 'goods:detail' banner.sku.id %}"><img src="{{ banner.image.url }}" alt="幻灯片"></a></li>
+				    <li><a href="#"><img src="{{ banner.image.url }}" alt="幻灯片"></a></li>
                 {% endfor %}
 			</ul>
 			<div class="prev"></div>
@@ -97,10 +89,10 @@
 			<div class="subtitle fl">
 				<span>|</span>
                 {% for font in type.font_goods_banners %}
-				    <a href="{% url 'goods:detail' font.sku.id %}">{{ font.sku.name }}</a>
+				    <a href="#">{{ font.sku.name }}</a>
 				{% endfor %}
 			</div>
-			<a href="{% url 'goods:list' type.id 1 %}" class="goods_more fr" id="{{ type.logo }}">查看更多 ></a>
+			<a href="#" class="goods_more fr" id="{{ type.logo }}">查看更多 ></a>
 		</div>
 
 		<div class="goods_con clearfix">
@@ -109,8 +101,8 @@
 				{% for image in type.image_goods_banners %}
                     <li>
                         <h4><a href="#">{{ image.sku.name }}</a></h4>
-                        <a href="{% url 'goods:detail' image.sku.id %}?sort=default"><img src="{{ image.sku.image.url }}"></a>
-                        <div class="prize">¥ {{ image.sku.price }}</div>
+                        <a href="#"><img src="{{ image.sku.image }}"></a>
+                        <div class="prize">{{ image.sku.price }}</div>
                     </li>
                 {% endfor %}
 			</ul>
@@ -126,7 +118,7 @@
 			<span>|</span>
 			<a href="#">招聘人才</a>
 			<span>|</span>
-			<a href="#">友情链接</a>		
+			<a href="#">友情链接</a>
 		</div>
 		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>

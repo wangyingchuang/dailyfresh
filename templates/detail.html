@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    {% load staticfiles %}
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>天天生鲜-商品详情</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+	<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到天天生鲜!</div>
+			<div class="fr">
+                {% if user.is_authenticated %}
+				<div class="login_btn fl">
+					欢迎您：<em>{{ user.username }}</em>
+                    <span>|</span>
+					<a href="{% url 'user:logout' %}">退出</a>
+				</div>
+                {% else %}
+				<div class="login_btn fl">
+					<a href="{% url 'user:login' %}">登录</a>
+					<span>|</span>
+					<a href="{% url 'user:register' %}">注册</a>
+				</div>
+                {% endif %}
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="{% url 'user:user' %}">用户中心</a>
+					<span>|</span>
+					<a href="{% url 'cart:show' %}">我的购物车</a>
+					<span>|</span>
+					<a href="{% url 'user:order' 1 %}">我的订单</a>
+				</div>
+			</div>
+		</div>		
+	</div>
+
+	<div class="search_bar clearfix">
+		<a href="{% url 'goods:index' %}" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<div class="search_con fl">
+			<form action="/search"  method="get">
+                <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+			    <input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
+		</div>
+		<div class="guest_cart fr">
+			<a href="{% url 'cart:show' %}" class="cart_name fl">我的购物车</a>
+			<div class="goods_count fl" id="show_count">{{ cart_count }}</div>
+		</div>
+	</div>
+
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>	
+				<span></span>			
+				<ul class="subnav">
+                    {% for type in types %}
+					<li><a href="{% url 'goods:list' type.id 1 %}" class="{{ type.logo }}">{{ type.name }}</a></li>
+                    {% endfor %}
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="{% url 'goods:index' %}">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">{{ sku.type.name }}</a>
+		<span>></span>
+		<a href="#">商品详情</a>
+	</div>
+
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="{{ sku.image.url }}"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{ sku.name }}</h3>
+			<p>{{ sku.desc }}</p>
+			<div class="prize_bar">
+
+				<span class="show_pirze">¥<em>{{ sku.price }}</em></span>
+				<span class="show_unit">单  位：{{ sku.unite }}</span>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="1">
+					<a href="javascript:;" class="add fr">+</a>
+					<a href="javascript:;" class="minus fr">-</a>	
+				</div> 
+			</div>
+            <div>
+                <p>其他规格</p>
+                <ul>
+                    {% for sku in same_spu_skus %}
+                        <li><a href="{% url 'goods:detail' sku.id %}">{{ sku.name }}</a> </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+			<div class="total">总价：<em>16.80</em>元</div>
+			<div class="operate_btn">
+                {% csrf_token %}
+				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="javascript:;" sku_id="{{ sku.id }}" class="add_cart" id="add_cart">加入购物车</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+                    {% for sku in new_skus %}
+					<li>
+						<a href="{% url 'goods:detail' sku.id %}"><img src="{{ sku.image.url }}"></a>
+						<h4><a href="{% url 'goods:detail' sku.id %}">{{ sku.name }}</a></h4>
+						<div class="prize">￥{{ sku.price }}</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li id='tag_detail' class="active">商品介绍</li>
+				<li id="tag_comment">评论</li>
+			</ul>
+
+			<div class="tab_content" id="tab_detail">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd>{{ sku.goods_spu.detail|safe }} </dd>
+				</dl>
+			</div>
+
+            <div class="tab_content" id="tab_comment" style="display: none">
+				<dl>
+                    {% for order in sku_orders %}
+					<dt>评论时间：{{ order.update_time }}&nbsp;&nbsp;用户名: {{ order.order.user.username }}</dt>
+					<dd>评论内容: {{ order.comment }} </dd>
+                    {% endfor %}
+				</dl>
+			</div>
+		</div>
+	</div>
+
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>		
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+	<div class="add_jump"></div>
+
+	<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+	<script type="text/javascript">
+        $('#tag_comment').click(function () {
+            $('#tag_detail').removeClass('active')
+            $(this).addClass('active')
+            $('#tab_detail').hide()
+            $('#tab_comment').show()
+        })
+        $('#tag_detail').click(function () {
+            $('#tag_comment').removeClass('active')
+            $(this).addClass('active')
+            $('#tab_detail').show()
+            $('#tab_comment').hide()
+        })
+        update_goods_amount();
+
+        // 计算和设置商品总价格
+        function update_goods_amount(){
+            // 获取商品单价和数量
+            var price = $('.show_pirze').children('em').text();
+            var count = $('.num_show').val();
+            // 计算商品总价格
+            price = parseFloat(price);
+            count = parseInt(count);
+            var amount = price*count;
+            //alert(price);
+            // 设置商品的总价
+            $('.total').children('em').text(amount.toFixed(2));
+        }
+
+        // 增加商品的数量
+        $('.add').click(function () {
+            // 获取商品原有数目
+            count = $('.num_show').val();
+            // 加1
+            count = parseInt(count)+1;
+            // 重新设置商品的数目
+            $('.num_show').val(count);
+            // 更新商品的总价
+            update_goods_amount()
+        });
+
+        // 减少商品的数量
+        $('.minus').click(function () {
+            // 获取商品原有数目
+            count = $('.num_show').val();
+            // 减1
+            count = parseInt(count)-1;
+            if (count <= 0){
+                count = 1
+            }
+            // 重新设置商品的数目
+            $('.num_show').val(count);
+            // 更新商品的总价
+            update_goods_amount()
+        });
+
+        // 手动输入商品的数量
+        $('.num_show').blur(function () {
+            // 获取用户输入商品的数目
+            count = $(this).val();
+            // 校验用户输入的是否合法
+            if (isNaN(count) || count.trim().length==0 || parseInt(count) <= 0){
+                count = 1
+            }
+            // 重新设置商品的数目
+            $(this).val(count);
+            // 更新商品的总价
+            update_goods_amount()
+        });
+
+		var $add_x = $('#add_cart').offset().top;
+		var $add_y = $('#add_cart').offset().left;
+
+		var $to_x = $('#show_count').offset().top;
+		var $to_y = $('#show_count').offset().left;
+
+		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+		$('#add_cart').click(function(){
+		    // 获取商品的id和数量
+            sku_id = $(this).attr('sku_id'); //attr prop
+            count = $('.num_show').val();
+            csrf = $('input[name="csrfmiddlewaretoken"]').val();
+            params = {'sku_id': sku_id, 'count': count, 'csrfmiddlewaretoken': csrf};
+            // 发起ajax请求
+            $.post('/cart/add', params, function (data) {
+                if (data.res == 5){
+                    // 添加成功
+                    $(".add_jump").stop().animate({
+                        'left': $to_y+7,
+                        'top': $to_x+7},
+                        "fast", function() {
+                            $(".add_jump").fadeOut('fast',function(){
+                                $('#show_count').html(data.total_count);
+                            });
+			});
+                }
+                else{
+                    // 添加失败
+                    alert(data.errmsg)
+                }
+            })
+
+
+		})
+	</script>
+	
+</body>
+</html>

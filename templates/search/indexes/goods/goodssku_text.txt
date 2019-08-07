@@ -1,0 +1,4 @@
+# 指定根据表中的哪些字段建立索引数据
+{{ object.name }}
+{{ object.desc }}
+{{ object.goods_sku.detail }}

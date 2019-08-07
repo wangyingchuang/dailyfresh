@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    {% load staticfiles %}
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>天天生鲜-订单评价</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+	<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到天天生鲜!</div>
+			<div class="fr">
+                {% if user.is_authenticated %}
+				<div class="login_btn fl">
+					欢迎您：<em>{{ user.username }}</em>
+                    <span>|</span>
+					<a href="{% url 'user:logout' %}">退出</a>
+				</div>
+                {% else %}
+				<div class="login_btn fl">
+					<a href="{% url 'user:login' %}">登录</a>
+					<span>|</span>
+					<a href="{% url 'user:register' %}">注册</a>
+				</div>
+                {% endif %}
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="{% url 'user:user' %}">用户中心</a>
+					<span>|</span>
+					<a href="cart.html">我的购物车</a>
+					<span>|</span>
+					<a href="{% url 'user:order' 1 %}">我的订单</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="search_bar clearfix">
+		<a href="{% url 'goods:index' %}" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
+		<div class="search_con fr">
+			<form action="/search"  method="get">
+                <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+			    <input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
+		</div>
+	</div>
+
+	<div class="main_con clearfix">
+		<div class="left_menu_con clearfix">
+			<h3>用户中心</h3>
+			<ul>
+				<li><a href="{% url 'user:user' %}" >· 个人信息</a></li>
+				<li><a href="{% url 'user:order' 1 %}" >· 全部订单</a></li>
+				<li><a href="{% url 'user:address' %}" >· 收货地址</a></li>
+			</ul>
+		</div>
+		<div class="right_content clearfix">
+				<h3 class="common_title2">订单评价</h3>
+				<ul class="order_list_th w978 clearfix">
+					<li class="col01">{{ order.create_time }}</li>
+					<li class="col02">订单号：{{ order.order_id }}</li>
+					<li class="col02 stress">{{ order.status_name }}</li>
+				</ul>
+                <form method="post">
+				    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.order_id }}"/>
+                    <input type="hidden" name="total_count" value="{{ order.total_count }}"/>
+                    {% for order_sku in order.order_skus %}
+                        <table class="order_list_table w980">
+                            <tbody>
+                                <tr>
+                                    <td width="55%">
+                                        <ul class="order_goods_list clearfix">
+                                            <li class="col01"><img src="{{ order_sku.sku.image.url }}"></li>
+                                            <li class="col02">{{ order_sku.sku.name }}<em>{{ order_sku.price }}元/{{ order_sku.sku.unite }}</em></li>
+                                            <li class="col03">{{ order_sku.count }}</li>
+
+                                        </ul>
+                                    </td>
+                                    <td width="20%">{{ order_sku.amount }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="site_con">
+                            <input type="hidden" name="sku_{{ forloop.counter }}" value="{{ order_sku.sku_id }}"/>
+                            <div class="form_group form_group2">
+                                <label>评价内容：</label>
+                                <textarea  class="site_area" name="content_{{ forloop.counter }}"></textarea>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="提交" class="info_submit"/>
+                </form>
+		</div>
+	</div>
+
+
+
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+</body>
+</html>
